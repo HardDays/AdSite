@@ -13,6 +13,18 @@ class CompaniesController < ApplicationController
     render json: @company
   end
 
+  def self.add_company
+    @company = Company.new(company_params)
+
+    if @company.save
+      render json: @company, status: :created, location: @company
+      return true
+    else
+      render json: @company.errors, status: :unprocessable_entity
+      return false
+    end
+  end
+
   # POST /companies
   def create
     @company = Company.new(company_params)

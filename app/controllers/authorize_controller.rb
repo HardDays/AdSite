@@ -13,4 +13,14 @@ class AuthorizeController < ApplicationController
 		end
 		return @token.user
 	end
+
+	def self.authorize(request, access)
+		@user = authorize(request)
+		return @user != nil and @user.has_access?(access)
+	end
+
+	def self.authorize(request, access, user)
+		@user = authorize(request)
+		return @user != nil and (@user.has_access?(access) or user == @user)
+	end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603133233) do
+ActiveRecord::Schema.define(version: 20170603175236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,16 +56,18 @@ ActiveRecord::Schema.define(version: 20170603133233) do
     t.integer "sub_category_id"
   end
 
-  create_table "companies_agrements", id: false, force: :cascade do |t|
+  create_table "agrements_companies", id: false, force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "agrement_id"
     t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
+    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
     t.index ["company_id"], name: "index_companies_agrements_on_company_id"
   end
 
   create_table "companies_expertises", id: false, force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "expertise_id"
+    t.index ["company_id", "expertise_id"], name: "index_companies_expertises_on_company_id_and_expertise_id", unique: true
     t.index ["company_id"], name: "index_companies_expertises_on_company_id"
     t.index ["expertise_id"], name: "index_companies_expertises_on_expertise_id"
   end

@@ -27,7 +27,7 @@ class AuthenticateController < ApplicationController
 
 	# POST /auth/logout
 	def logout
-		@token = Token.find_by token: params[:token]
+		@token = Token.find_by token: request.headers['Authorization']
 		if @token != nil
 			@token.destroy
 			render status: :ok

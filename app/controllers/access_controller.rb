@@ -12,15 +12,16 @@ class AccessController < ApplicationController
 	end
 
 	def self.grant_access(user, access_list)
-		@res = true
+		user.accesses.clear
 		access_list.each do |acc|
 			begin
 				@acc = Access.find_by name: acc
-				@res = @res and user.accesses << @acc
+				user.accesses << @acc
 			rescue Exception
+				return false
 			end
 		end
-		return @res
+		return true
 	end
 
 	def self.grant_admin_access(user)
@@ -41,10 +42,10 @@ class AccessController < ApplicationController
 	end
 
 	def authorize_grant
-      @from_user = AuthorizeController.authorize(request)
-      if @from_user == nil or not @from_user.has_access?(:can_create_user_access)
-        render status: :unauthorized
-      end
+    	@from_user = AuthorizeController.authorize(request)
+    	if @from_user == nil or not @from_user.has_access?(:can_create_user_access)
+   			render status: :unauthorized
+  		end
     end
 
 end

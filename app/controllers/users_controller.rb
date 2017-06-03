@@ -52,24 +52,15 @@ class UsersController < ApplicationController
       params.require(:user).permit(:email, :password, :first_name, :last_name, :phone)
     end
 
-    def authorize
-      @from_user = AuthorizeController.authorize(request, access)
-      if @from_user == nil
-        render status: :unauthorized
-      end
-    end
-
     def authorize(access)
-      @from_user = AuthorizeController.authorize(request)
-      if @from_user == nil or not @from_user.has_access?(access)
+      if not AuthorizeController.authorize(request, access)
         render status: :unauthorized
       end
     end
 
     def authorize_self(access)
       set_user
-      @from_user = AuthorizeController.authorize(request)
-      if @from_user == nil or not @from_user.has_access?(access) or @user != @from_user
+      if not AuthorizeController.authorize(request, access, @user)
         render status: :unauthorized
       end
     end
