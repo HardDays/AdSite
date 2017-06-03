@@ -53,14 +53,14 @@ class UsersController < ApplicationController
     end
 
     def authorize(access)
-      if not AuthorizeController.authorize(request, access)
+      if not AuthorizeController.authorize_access(request, access)
         render status: :unauthorized
       end
     end
 
     def authorize_self(access)
       set_user
-      if not AuthorizeController.authorize(request, access, @user)
+      if not AuthorizeController.authorize_self(request, access, @user)
         render status: :unauthorized
       end
     end

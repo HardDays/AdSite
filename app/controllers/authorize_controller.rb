@@ -14,7 +14,7 @@ class AuthorizeController < ApplicationController
 		return @token.user
 	end
 
-	def self.authorize(request, access)
+	def self.authorize_access(request, access)
 		@user = authorize(request)
 		if @user != nil 
 			return @user.has_access?(access)
@@ -22,10 +22,10 @@ class AuthorizeController < ApplicationController
 		return false
 	end
 
-	def self.authorize(request, access, user)
+	def self.authorize_self(request, access, user)
 		@user = authorize(request)
 		if @user != nil 
-			return @user.has_access?(access) or user == @user
+			return (@user.has_access?(access) or (user == @user))
 		end 
 		return false
 	end
