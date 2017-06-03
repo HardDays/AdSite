@@ -2,12 +2,7 @@ require 'digest'
 require 'securerandom'
 
 class AuthenticateController < ApplicationController
-	before_action :skip_session
-
-	def skip_session
-	    request.session_options[:skip] = true
-	end
-
+	
 	def process_token(request, user)
 		@info = Digest::SHA256.hexdigest(request.ip + request.user_agent + 'kek salt')
 		@token = @user.tokens.find{|s| s.info == @info}
@@ -16,6 +11,7 @@ class AuthenticateController < ApplicationController
 		end
 	end
 
+	# POST /auth/login
 	def login
 		@password = User.encrypt_password(params[:password])
 		@user = User.find_by email: params[:email], password: @password
@@ -29,6 +25,7 @@ class AuthenticateController < ApplicationController
 		end
 	end
 
+	# POST /auth/logout
 	def logout
 		@token = Token.find_by token: params[:token]
 		if @token != nil
