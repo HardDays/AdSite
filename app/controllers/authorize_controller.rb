@@ -16,11 +16,17 @@ class AuthorizeController < ApplicationController
 
 	def self.authorize(request, access)
 		@user = authorize(request)
-		return @user != nil and @user.has_access?(access)
+		if @user != nil 
+			return @user.has_access?(access)
+		end 
+		return false
 	end
 
 	def self.authorize(request, access, user)
 		@user = authorize(request)
-		return @user != nil and (@user.has_access?(access) or user == @user)
+		if @user != nil 
+			return @user.has_access?(access) or user == @user
+		end 
+		return false
 	end
 end
