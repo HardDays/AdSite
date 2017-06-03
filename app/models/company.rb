@@ -6,5 +6,4 @@ class Company < ApplicationRecord
 
 	has_and_belongs_to_many :expertises
 	has_and_belongs_to_many :agrements
-
 end

@@ -9,6 +9,8 @@ class User < ApplicationRecord
 
 	has_one :company
 
+	has_and_belongs_to_many :accesses
+
 	def self.encrypt_password(password)
 		return Digest::SHA256.hexdigest(password + 'elite_salt')
 	end
@@ -19,5 +21,10 @@ class User < ApplicationRecord
 
 	before_update do
 		self.password = User.encrypt_password(self.password)
+	end
+
+	def has_access?(access_name)
+		@access = self.accesses.find{|a| a.name == access_name.to_s}
+		return @access != nil ? true : false
 	end
 end
