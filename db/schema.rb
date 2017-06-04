@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170604141102) do
+ActiveRecord::Schema.define(version: 20170604181122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,29 @@ ActiveRecord::Schema.define(version: 20170604141102) do
     t.index ["user_id"], name: "index_users_accesses_on_user_id"
   end
 
+  create_table "ads", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.string "address"
+    t.integer "user_id"
+    t.integer "c_type_id"
+    t.integer "sub_category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ads_agrements", id: :bigint, default: -> { "nextval('ads_agreements_id_seq'::regclass)" }, force: :cascade do |t|
+    t.integer "ad_id"
+    t.integer "agrement_id"
+    t.index ["ad_id", "agrement_id"], name: "index_ads_agrements_on_ad_id_and_agrement_id", unique: true
+  end
+
+  create_table "ads_expertises", force: :cascade do |t|
+    t.integer "ad_id"
+    t.integer "expertise_id"
+    t.index ["ad_id", "expertise_id"], name: "index_ads_expertises_on_ad_id_and_expertise_id", unique: true
+  end
+
   create_table "agrements", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -38,9 +61,9 @@ ActiveRecord::Schema.define(version: 20170604141102) do
   create_table "agrements_companies", id: false, force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "agrement_id"
-    t.index ["agrement_id"], name: "index_agrements_companies_on_agrement_id"
-    t.index ["company_id", "agrement_id"], name: "index_agrements_companies_on_agrement_id_and_company_id", unique: true
-    t.index ["company_id"], name: "index_agrements_companies_on_company_id"
+    t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
+    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
+    t.index ["company_id"], name: "index_companies_agrements_on_company_id"
   end
 
   create_table "c_types", force: :cascade do |t|

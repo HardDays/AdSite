@@ -54,11 +54,11 @@ class UsersController < ApplicationController
       end
       #many-to-many agrements
       if params[:agrements] != nil
-        @ok = @ok and AgrementController.set_agrements(@company, params[:agrements])
+        @ok = @ok and AgrementController.set_company_agrements(@company, params[:agrements])
       end
       #many-to-many expretises
       if params[:expertises] != nil
-        @ok = @ok and ExpertiseController.set_expertises(@company, params[:expertises])
+        @ok = @ok and ExpertiseController.set_company_expertises(@company, params[:expertises])
       end
       #grant access to post ads
       @ok = @ok and AccessController.grant_enterprises_access(@user)
@@ -98,11 +98,11 @@ class UsersController < ApplicationController
       if !@company.update(company_params)
         #many-to-many agrements
         if params[:agrements] != nil
-          AgrementController.set_agrements(@company, params[:agrements])
+          AgrementController.set_company_agrements(@company, params[:agrements])
         end
         #many-to-many expretises
         if params[:expertises] != nil
-          ExpertiseController.set_expertises(@company, params[:expertises])
+          ExpertiseController.set_company_expertises(@company, params[:expertises])
         end
 
         render json: @company.errors, status: :unprocessable_entity and return

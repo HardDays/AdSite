@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :ads
   #Authentication routes
 
   post 'auth/login', action: :login, controller: 'authenticate'
@@ -19,6 +18,14 @@ Rails.application.routes.draw do
 
   get 'access/user_access/:id', action: :user_access, controller: 'access'
   get 'access/my_access', action: :my_access, controller: 'access'
+
+  #Ads routes
+
+  get 'ads/all', action: :index, controller: 'ads'
+  get 'ads/info/:id', action: :show, controller: 'ads'
+  post 'ads/create', action: :create, controller: 'ads'
+  put 'ads/update/:id', action: :update, controller: 'ads'
+  delete 'ads/delete/:id', action: :delete, controller: 'ads'
 
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
