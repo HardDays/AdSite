@@ -1,7 +1,7 @@
 class AgrementController < ApplicationController
 
 	def self.set_agrements(company, agrements)
-    #trash2
+    #trash3
 		company.agrements.clear
 		agrements.each do |agr|
 			begin
