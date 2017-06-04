@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 20170604103226) do
     t.index ["company_id"], name: "index_companies_agrements_on_company_id"
   end
 
+  #postgres://ojkruothpjanjs:98b3a2ebb12d72110da4ef3fec03985535d8a36234f0b9d45372546c15fd65ca@ec2-54-247-166-129.eu-west-1.compute.amazonaws.com:5432/ddo49j4jgju5lf
+
   create_table "c_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
