@@ -36,3 +36,9 @@ end
 @admin = User.find_by email: :admin
 AccessController.grant_admin_access(@admin)
 
+@types = [:concepteur, :conseiller, :both]
+
+@types.each do |name|
+	@t = CType.new(name: name)
+	@t.save
+end

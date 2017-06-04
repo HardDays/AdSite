@@ -1,5 +1,5 @@
 class Agrement < ApplicationRecord
 	validates :name, presence: true, uniqueness: true
 	
-	has_and_belongs_to_many :companies
+	has_and_belongs_to_many :companies, dependent: :destroy
 end

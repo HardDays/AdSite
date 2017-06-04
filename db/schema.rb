@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170603175236) do
+ActiveRecord::Schema.define(version: 20170604103226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,20 @@ ActiveRecord::Schema.define(version: 20170603175236) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "agrements_companies", id: false, force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "agrement_id"
+    t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
+    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
+    t.index ["company_id"], name: "index_companies_agrements_on_company_id"
+  end
+
+  create_table "c_types", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "companies", force: :cascade do |t|
     t.string "name"
     t.string "address"
@@ -42,7 +56,6 @@ ActiveRecord::Schema.define(version: 20170603175236) do
     t.string "email"
     t.string "phone"
     t.time "opening_times"
-    t.string "type"
     t.string "company_id"
     t.string "description"
     t.string "links"
@@ -54,14 +67,7 @@ ActiveRecord::Schema.define(version: 20170603175236) do
     t.datetime "logo_updated_at"
     t.integer "user_id"
     t.integer "sub_category_id"
-  end
-
-  create_table "agrements_companies", id: false, force: :cascade do |t|
-    t.bigint "company_id"
-    t.bigint "agrement_id"
-    t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
-    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
-    t.index ["company_id"], name: "index_companies_agrements_on_company_id"
+    t.integer "c_type_id"
   end
 
   create_table "companies_expertises", id: false, force: :cascade do |t|
