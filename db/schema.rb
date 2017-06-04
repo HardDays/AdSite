@@ -38,9 +38,9 @@ ActiveRecord::Schema.define(version: 20170604141102) do
   create_table "agrements_companies", id: false, force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "agrement_id"
-    t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
-    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
-    t.index ["company_id"], name: "index_companies_agrements_on_company_id"
+    t.index ["agrement_id"], name: "index_agrements_companies_on_agrement_id"
+    t.index ["company_id", "agrement_id"], name: "index_agrements_companies_on_agrement_id_and_company_id", unique: true
+    t.index ["company_id"], name: "index_agrements_companies_on_company_id"
   end
 
   create_table "c_types", force: :cascade do |t|

@@ -1,4 +1,4 @@
-class CompaniesAgrements < ActiveRecord::Migration[5.1]
+class AgrementsCompanies < ActiveRecord::Migration[5.1]
   def change
   	create_table :agrements_companies, id: false do |t|
       t.belongs_to :company, index: true
