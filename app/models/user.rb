@@ -18,11 +18,7 @@ class User < ApplicationRecord
 	before_create do
 		self.password = User.encrypt_password(self.password)
 	end
-
-	before_update do
-		self.password = User.encrypt_password(self.password)
-	end
-
+	
 	def has_access?(access_name)
 		@access = self.accesses.find{|a| a.name == access_name.to_s}
 		return @access != nil ? true : false

@@ -4,19 +4,29 @@ class UsersController < ApplicationController
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
 
-  # GET /users
+  # GET /users/all
   def index
     @users = User.all
     render json: @users, except: :password
   end
 
-  # GET /users/1
+  # GET /users/info/:id
   def show
     @user = User.find(params[:id])
     render json: @user, except: :password
   end
 
-  # POST /users
+  # GET /users/my_info
+  def my_info
+    @user = AuthorizeController.authorize(request)
+    if @user != nil
+      render json: @user, except: :password
+    else
+      render status: :unauthorized
+    end
+  end
+
+  # POST /users/create
   def create
     #create user
     @user = User.new(user_params)
@@ -58,7 +68,7 @@ class UsersController < ApplicationController
         @company.destroy
         render status: :unprocessable_entity and return
       else
-        render json: @user, except: :password, status: :created, location: @user
+        render json: @user, except: :password, status: :created
       end
     else
       #give client access
@@ -66,25 +76,42 @@ class UsersController < ApplicationController
         @user.destroy
         render status: :unprocessable_entity and return
       end
-      render json: @user, except: :password, status: :created, location: @user
+      render json: @user, except: :password, status: :created
     end 
-  end
+  end 
 
+  # PUT /users/update/:id
   def update
-    @user = User.find(params[:user][:id])
-    @company = Company.find(params[:company][:id])
+    @user = User.find(params[:id])
+    @password = params[:user][:password]
+    if @password != nil
+      params[:user][:password] = User.encrypt_password(@password)
+    end
     #update user
     if !@user.update(user_params)
       render json: @user.errors, status: :unprocessable_entity and return
     end
-     #update company
-    if !@company.update(company_params)
-      render json: @company.errors, status: :unprocessable_entity and return
-    end
-    render json: @user, except: :password, status: :updated
+
+    #update company
+    if params[:company] != nil
+      @company = Company.find_by user_id: @user.id
+      if !@company.update(company_params)
+        #many-to-many agrements
+        if params[:agrements] != nil
+          AgrementController.set_agrements(@company, params[:agrements])
+        end
+        #many-to-many expretises
+        if params[:expertises] != nil
+          ExpertiseController.set_expertises(@company, params[:expertises])
+        end
+
+        render json: @company.errors, status: :unprocessable_entity and return
+      end
+      render json: @user, except: :password, status: :updated
+      end
     end
 
-  # DELETE /users/1
+  # DELETE /users/delete/:id
   def destroy
     @user = User.find(params[:id])
     @user.destroy
@@ -94,6 +121,10 @@ class UsersController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def user_params
       params.require(:user).permit(:email, :password, :first_name, :last_name, :phone)
+    end
+
+    def company_params
+      params.require(:company).permit(:name, :logo, :address, :other_address, :email, :phone, :opening_times, :c_type, :company_id, :description, :links, :user_id)
     end
 
     def authorize(access)

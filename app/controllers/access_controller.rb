@@ -1,6 +1,8 @@
 class AccessController < ApplicationController
 
 	before_action :authorize_grant, only: [:grant_admin_access_route]
+	before_action :authorize_view, only: [:user_access]
+	before_action :authorize_self, only: [:my_access]
 
 	def grant_admin_access_route
 		@user = find(params[:user_id])
@@ -9,6 +11,14 @@ class AccessController < ApplicationController
 		else
 			render status: :bad_request
 		end
+	end
+
+	def user_access
+		get_access
+	end
+
+	def my_access
+		get_access
 	end
 
 	def self.grant_access(user, access_list)
@@ -41,11 +51,31 @@ class AccessController < ApplicationController
 		return grant_access(user, @accesses)
 	end
 
+	private
+
+	def get_access
+		if @user != nil
+			render json: @user.accesses.collect{|a| a.name}, status: :ok
+		else
+			render status: :unauthorized
+		end
+	end
+
 	def authorize_grant
-    	@from_user = AuthorizeController.authorize(request)
-    	if @from_user == nil or not @from_user.has_access?(:can_create_user_access)
+    	if not AuthorizeController.authorize_access(request, :can_create_user_access)
    			render status: :unauthorized
   		end
+    end
+
+    def authorize_view
+    	@user = User.find(params[:id])
+    	if not AuthorizeController.authorize_self(request, :can_view_user_access, @user)
+   			render status: :unauthorized
+  		end
+    end
+
+    def authorize_self
+    	@user = AuthorizeController.authorize(request)
     end
 
 end
