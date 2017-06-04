@@ -87,3 +87,5 @@ production:
   password: 0d5a270dfa404521924fc81d858051841932367de8c1917f801f8602044aa282
 
   #postgres://byueeficxifavn:0d5a270dfa404521924fc81d858051841932367de8c1917f801f8602044aa282@ec2-54-247-99-159.eu-west-1.compute.amazonaws.com:5432/dduds7lr4qpdng
+
+  #postgres://ojkruothpjanjs:98b3a2ebb12d72110da4ef3fec03985535d8a36234f0b9d45372546c15fd65ca@ec2-54-247-166-129.eu-west-1.compute.amazonaws.com:5432/ddo49j4jgju5lf
