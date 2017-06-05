@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'users/info/:id', action: :show, controller: 'users'
   get 'users/my_info', action: :my_info, controller: 'users'
   post 'users/create', action: :create, controller: 'users'
+  post 'users/rate', action: :rate, controller: 'users'
   put 'users/update/:id', action: :update, controller: 'users'
   delete 'users/delete/:id', action: :delete, controller: 'users'
 

@@ -5,11 +5,56 @@ class AdsController < ApplicationController
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
 
+  def filter_one(param)
+    if @ads != nil
+      @ads = @ads.where(param)
+    else
+      @ads = Ad.where(param)
+    end
+  end
+
+   def filter_two(param1, param2)
+    if @ads != nil
+      @ads = @ads.where(param1, param2)
+    else
+      @ads = Ad.where(param1, param2)
+    end
+  end
+
+  def filter_join(param)
+    if @ads != nil
+      @ads = @ads.joins(param).where(param => {name: params[param]})
+    else
+      @ads = Ad.joins(param).where(param => {name: params[param]})
+    end
+  end
+
   # GET /ads/all
   def index
-    @ads = Ad.all
-
-    render json: @ads
+    filter_two("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
+    filter_two("description LIKE ?", "%#{params[:description]}%") if params[:description].present?
+    filter_two("address LIKE ?", "%#{params[:address]}%") if params[:address].present?
+    #filter by type
+    if params[:c_type].present?
+      @type = CType.find_by(name: params[:c_type])
+      filter_one(c_type_id: @type.id)
+    end
+    #filter by category
+    if params[:sub_category].present?
+      @type = SubCategory.find_by(name: params[:sub_category])
+      filter_one(sub_category_id: @type.id)
+    end
+    #filter by author
+    @ads = filter_one(user_id: params[:user_id]) if params[:user_id].present?
+    #filter by expertise
+    @ads = filter_join(:expertises) if params[:expertises].present?
+    #filter by agrement
+    @ads = filter_join(:agrements) if params[:agrements].present?
+    #get all if no filters
+    @ads = Ad.all if @ads == nil
+    #limit, offset
+    @ads = @ads.offset(params[:offset]).limit(params[:limit])
+    render json: {ads: @ads}
   end
 
   # GET /ads/info/:id
@@ -23,6 +68,7 @@ class AdsController < ApplicationController
     @ad.user_id = @user.id
 
     if @ad.save
+      #copy parameters from user
       if @user.company != nil
         @ad.c_type_id = @user.company.c_type.id
         @ad.sub_category_id = @user.company.sub_category.id
@@ -84,7 +130,7 @@ class AdsController < ApplicationController
    end
 
    def authorize_delete
-     authorize(:can_delete_ads)
+     authorize_self(:can_delete_ads)
    end
 
     def set_ad

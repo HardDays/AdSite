@@ -3,11 +3,30 @@ class UsersController < ApplicationController
   before_action :authorize_show, only: [:show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
+  before_action :authorize_rate, only: [:rate]
+
+  # POST /users/rate
+  def rate
+    @user = User.find(params[:user_id])
+    if @user.company == nil
+      render status: :unprocessable_entity and return
+    end
+    @rate = Rate.new(user_id: @from.id, company_id: @user.company.id, rate: params[:rate])
+    begin
+      if @rate.save
+        render status: :ok
+      else
+        render json: @rate.errors, status: :unprocessable_entity
+      end
+    rescue Exception
+        render status: :conflict 
+    end
+  end
 
   # GET /users/all
   def index
-    @users = User.all
-    render json: @users, except: :password
+    @users = User.limit(params[:limit]).offset(params[:offset])
+    render json: {users: @users, total_count: User.count}, except: :password
   end
 
   # GET /users/info/:id
@@ -140,6 +159,13 @@ class UsersController < ApplicationController
       end
     end
 
+    def authorize_rate
+      @from = AuthorizeController.authorize(request)
+      if @from == nil or not @from.has_access?(:can_rate)
+        render status: :unauthorized
+      end
+    end
+
     def authorize_index
       authorize(:can_view_users)
     end
@@ -150,7 +176,7 @@ class UsersController < ApplicationController
 
     def authorize_update
      authorize_self(:can_update_users)
-   end
+    end
 
    def authorize_delete
      authorize(:can_delete_users)
