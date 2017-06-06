@@ -43,12 +43,12 @@ class AccessController < ApplicationController
 	end
 
 	def self.grant_client_access(user)
-		@accesses = [:can_view_ads, :can_rate]
+		@accesses = [:can_view_ads, :can_rate, :can_view_users]
 		return grant_access(user, @accesses)
 	end
 
 	def self.grant_enterprises_access(user)
-		@accesses = [:can_create_ads, :can_view_ads, :can_rate]
+		@accesses = [:can_create_ads, :can_view_ads, :can_rate, :can_view_users]
 		return grant_access(user, @accesses)
 	end
 
