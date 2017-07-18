@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :news
   #Authentication routes
 
   post 'auth/login', action: :login, controller: 'authenticate'
