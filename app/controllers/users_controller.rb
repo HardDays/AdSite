@@ -58,12 +58,12 @@ class UsersController < ApplicationController
       @company = Company.new(company_params)
       @company.user_id = @user.id
       #add category
-      if params[:sub_category] != nil
-        @company.sub_category = SubCategory.find_by name: params[:sub_category]
+      if params[:company][:sub_category] != nil
+        @company.sub_category = SubCategory.find_by name: params[:company][:sub_category]
       end
       #add type
-      if params[:c_type] != nil
-        @company.c_type = CType.find_by name: params[:c_type]
+      if params[:company][:c_type] != nil
+        @company.c_type = CType.find_by name: params[:company][:c_type]
       end
       #create company
       @ok = true
@@ -114,6 +114,14 @@ class UsersController < ApplicationController
     #update company
     if params[:company] != nil
       @company = Company.find_by user_id: @user.id
+
+      if params[:company][:sub_category] != nil
+        @company.sub_category = SubCategory.find_by name: params[:company][:sub_category]
+      end
+      #add type
+      if params[:company][:c_type] != nil
+        @company.c_type = CType.find_by name: params[:company][:c_type]
+      end
       if !@company.update(company_params)
         #many-to-many agrements
         if params[:agrements] != nil
@@ -143,7 +151,7 @@ class UsersController < ApplicationController
     end
 
     def company_params
-      params.require(:company).permit(:name, :logo, :address, :other_address, :email, :phone, :opening_times, :c_type, :company_id, :description, :links, :user_id)
+      params.require(:company).permit(:name, :logo, :address, :other_address, :email, :phone, :opening_times, :company_id, :description, :links, :user_id)
     end
 
     def authorize(access)

@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 20170605174555) do
     t.bigint "user_id"
     t.bigint "access_id"
     t.index ["access_id", "user_id"], name: "index_accesses_users_on_access_id_and_user_id", unique: true
-    t.index ["access_id"], name: "index_users_accesses_on_access_id"
-    t.index ["user_id"], name: "index_users_accesses_on_user_id"
+    t.index ["access_id"], name: "index_accesses_users_on_access_id"
+    t.index ["user_id"], name: "index_accesses_users_on_user_id"
   end
 
   create_table "ads", force: :cascade do |t|
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20170605174555) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ads_agrements", id: :bigint, default: -> { "nextval('ads_agreements_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "ads_agrements", force: :cascade do |t|
     t.integer "ad_id"
     t.integer "agrement_id"
     t.index ["ad_id", "agrement_id"], name: "index_ads_agrements_on_ad_id_and_agrement_id", unique: true
@@ -61,9 +61,9 @@ ActiveRecord::Schema.define(version: 20170605174555) do
   create_table "agrements_companies", id: false, force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "agrement_id"
-    t.index ["agrement_id"], name: "index_companies_agrements_on_agrement_id"
-    t.index ["company_id", "agrement_id"], name: "index_companies_agrements_on_company_id_and_agrement_id", unique: true
-    t.index ["company_id"], name: "index_companies_agrements_on_company_id"
+    t.index ["agrement_id"], name: "index_agrements_companies_on_agrement_id"
+    t.index ["company_id", "agrement_id"], name: "index_agrements_companies_on_company_id_and_agrement_id", unique: true
+    t.index ["company_id"], name: "index_agrements_companies_on_company_id"
   end
 
   create_table "c_types", force: :cascade do |t|
