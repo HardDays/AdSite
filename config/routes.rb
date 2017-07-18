@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-
-  resources :news
   #Authentication routes
 
   post 'auth/login', action: :login, controller: 'authenticate'
@@ -28,6 +26,13 @@ Rails.application.routes.draw do
   post 'ads/create', action: :create, controller: 'ads'
   put 'ads/update/:id', action: :update, controller: 'ads'
   delete 'ads/delete/:id', action: :delete, controller: 'ads'
+
+  #News routes
+  get 'news/all', action: :index, controller: 'news'
+  get 'news/info/:id', action: :show, controller: 'news'
+  post 'news/create', action: :create, controller: 'news'
+  put 'news/update/:id', action: :update, controller: 'news'
+  delete 'news/delete/:id', action: :delete, controller: 'news'
 
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

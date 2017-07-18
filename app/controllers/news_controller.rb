@@ -1,5 +1,10 @@
 class NewsController < ApplicationController
-  before_action :set_news, only: [:show, :update, :destroy]
+  before_action :set_news, only: [:show, :update, :delete]
+
+  before_action :authorize_create, only: [:create]
+  before_action :authorize_show, only: [:index, :show]
+  before_action :authorize_update, only: [:update]
+  before_action :authorize_delete, only: [:delete]
 
   # GET /news
   def index
@@ -16,9 +21,9 @@ class NewsController < ApplicationController
   # POST /news
   def create
     @news = News.new(news_params)
-
+    @news.user_id = @user.id
     if @news.save
-      render json: @news, status: :created, location: @news
+      render json: @news, status: :created
     else
       render json: @news.errors, status: :unprocessable_entity
     end
@@ -34,7 +39,7 @@ class NewsController < ApplicationController
   end
 
   # DELETE /news/1
-  def destroy
+  def delete
     @news.destroy
   end
 
@@ -42,6 +47,36 @@ class NewsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_news
       @news = News.find(params[:id])
+    end
+
+    def authorize(access)
+      @user = AuthorizeController.authorize(request)
+      if @user == nil or not @user.has_access?(access)
+        render status: :unauthorized
+      end
+    end
+
+    def authorize_self(access)
+      @user = News.find(params[:id]).user
+      if not AuthorizeController.authorize_self(request, access, @user)
+        render status: :unauthorized
+      end
+    end
+
+    def authorize_create
+      authorize(:can_create_news)
+    end
+
+    def authorize_show
+      authorize(:can_view_news)
+    end
+
+    def authorize_update
+      authorize_self(:can_update_news)
+    end
+
+    def authorize_delete
+      authorize_self(:can_delete_news)
     end
 
     # Only allow a trusted parameter "white list" through.

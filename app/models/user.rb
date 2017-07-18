@@ -8,6 +8,7 @@ class User < ApplicationRecord
 	has_many :tokens, dependent: :destroy
 	has_many :ads, dependent: :destroy
 	has_many :rates, dependent: :destroy
+	has_many :news, dependent: :destroy
 
 	has_one :company, dependent: :destroy
 

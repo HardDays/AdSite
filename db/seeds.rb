@@ -9,6 +9,7 @@
 				:can_create_users, :can_view_users, :can_delete_users, :can_update_users,
 				:can_create_user_access, :can_view_user_access, :can_delete_user_access, :can_update_user_access,
 				:can_create_companies, :can_view_companies, :can_delete_companies, :can_update_companies,
+				:can_create_news, :can_view_news, :can_update_news, :can_delete_news,
 				:can_rate]
 
 @access_names.each do |name|

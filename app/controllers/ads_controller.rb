@@ -94,7 +94,7 @@ class AdsController < ApplicationController
   end
 
   # DELETE /ads/delete/:id
-  def destroy
+  def delete
     @ad.destroy
   end
 
