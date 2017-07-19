@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170718094049) do
+ActiveRecord::Schema.define(version: 20170719143859) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,13 +84,10 @@ ActiveRecord::Schema.define(version: 20170718094049) do
     t.string "links"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "logo_file_name"
-    t.string "logo_content_type"
-    t.integer "logo_file_size"
-    t.datetime "logo_updated_at"
     t.integer "user_id"
     t.integer "sub_category_id"
     t.integer "c_type_id"
+    t.integer "image_id"
   end
 
   create_table "companies_expertises", id: false, force: :cascade do |t|
@@ -103,6 +100,12 @@ ActiveRecord::Schema.define(version: 20170718094049) do
 
   create_table "expertises", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "images", force: :cascade do |t|
+    t.string "base64"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

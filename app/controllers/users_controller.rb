@@ -65,6 +65,12 @@ class UsersController < ApplicationController
       if params[:company][:c_type] != nil
         @company.c_type = CType.find_by name: params[:company][:c_type]
       end
+      #add image
+      if params[:company][:base64] != nil
+        @image = Image.new(base64: params[:company][:base64])
+        @image.save
+        @company.image = @image
+      end
       #create company
       @ok = true
       if !@company.save
@@ -114,13 +120,19 @@ class UsersController < ApplicationController
     #update company
     if params[:company] != nil
       @company = Company.find_by user_id: @user.id
-
+      #add sub-category
       if params[:company][:sub_category] != nil
         @company.sub_category = SubCategory.find_by name: params[:company][:sub_category]
       end
       #add type
       if params[:company][:c_type] != nil
         @company.c_type = CType.find_by name: params[:company][:c_type]
+      end
+      #add image
+      if params[:company][:base64] != nil
+        @image = Image.new(base64: params[:company][:base64])
+        @image.save
+        @company.image = @image
       end
       if !@company.update(company_params)
         #many-to-many agrements

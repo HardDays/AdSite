@@ -28,12 +28,15 @@ Rails.application.routes.draw do
   delete 'ads/delete/:id', action: :delete, controller: 'ads'
 
   #News routes
+
   get 'news/all', action: :index, controller: 'news'
   get 'news/info/:id', action: :show, controller: 'news'
   post 'news/create', action: :create, controller: 'news'
   put 'news/update/:id', action: :update, controller: 'news'
   delete 'news/delete/:id', action: :delete, controller: 'news'
 
+  #Images routes
+  get 'images/info/:id', action: :show, controller: 'images'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
