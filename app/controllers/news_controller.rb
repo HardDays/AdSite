@@ -10,7 +10,12 @@ class NewsController < ApplicationController
   def index
     @news = News.all
 
-    render json: @news
+    @filters = ['title', 'description']
+    @filters.each do |filter|
+      @news = @news.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+    end
+
+    render json: @news.limit(params[:limit]).offset(params[:offset])
   end
 
   # GET /news/1

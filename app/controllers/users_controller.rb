@@ -25,8 +25,16 @@ class UsersController < ApplicationController
 
   # GET /users/all
   def index
-    @users = User.limit(params[:limit]).offset(params[:offset])
-    render json: {users: @users, total_count: User.count}, except: :password
+    @users = User.all
+
+    @filters = ['first_name', 'last_name', 'email']
+    @filters.each do |filter|
+      @users = @users.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+    end
+
+    @users = @users.limit(params[:limit]).offset(params[:offset])
+
+    render json: {users: @users, total_count: @users.count}, except: :password
   end
 
   # GET /users/info/:id

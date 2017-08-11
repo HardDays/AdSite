@@ -5,6 +5,21 @@ class CompaniesController < ApplicationController
   def index
     @companies = Company.all
 
+    if params[:c_type].present?
+      @type = CType.find_by(name: params[:c_type])
+      @companies = @companies.where(c_type_id: @type.id)
+    end
+
+    if params[:sub_category].present?
+      @type = SubCategory.find_by(name: params[:sub_category])
+      @companies = @companies.where(sub_category_id: @type.id)
+    end
+
+    @filters = ['name', 'address', 'other_address', 'email', 'opening_times', 'description']
+    @filters.each do |filter|
+      @companies = @companies.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+    end
+
     render json: @companies
   end
 
