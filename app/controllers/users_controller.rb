@@ -23,19 +23,93 @@ class UsersController < ApplicationController
     end
   end
 
+  def filter_one(param)
+    if @users != nil
+      @users = @users.or(Company.where(param))
+    else
+      @users = Company.where(param)
+    end
+  end
+
+   def filter_two(param1, param2)
+    if @users != nil
+      @users = @users.or(Company.where(param1, param2))
+    else
+      @users = Company.where(param1, param2)
+    end
+  end
+
+  def filter_join(param)
+    if @users != nil
+      @users = @users.joins(param).where(param => {name: params[param]})
+    else
+      @users = Company.joins(param).where(param => {name: params[param]})
+    end
+  end
+
   # GET /users/all
   def index
-    @users = User.all
 
-    @filters = ['first_name', 'last_name', 'email']
-    @filters.each do |filter|
-      @users = @users.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+    @users = nil
+    
+    filter_two("companies.name LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    filter_two("address LIKE ?", "%#{params[:address]}%") if params[:address].present?
+    filter_two("other_address LIKE ?", "%#{params[:other_address]}%") if params[:other_address].present?
+    filter_two("email LIKE ?", "%#{params[:email]}%") if params[:email].present?
+    filter_two("opening_times LIKE ?", "%#{params[:opening_times]}%") if params[:opening_times].present?
+    filter_two("company_id LIKE ?", "%#{params[:company_id]}%") if params[:company_id].present?
+
+    #filter by type
+    if params[:c_type].present?
+      @type = CType.find_by(name: params[:c_type])
+      if @users != nil
+        @users = @users.or(Company.where(c_type_id: @type.id))
+      else
+        @users = Company.where(c_type_id: @type.id)
+      end
+    end
+    #filter by category
+    if params[:sub_category].present?
+      @type = SubCategory.find_by(name: params[:sub_category])
+      if @users != nil
+        @users = @users.or(Company.where(sub_category_id: @type.id))
+      else
+        @users = Company.where(sub_category_id: @type.id)
+      end
     end
 
-    @users = @users.limit(params[:limit]).offset(params[:offset])
+    #filter by expertise
+    @users = filter_join(:expertises) if params[:expertises].present?
+    #filter by agrement
+    @users = filter_join(:agrements) if params[:agrements].present?
 
-    render json: {users: @users, total_count: @users.count}, except: :password
+    #get all if no filters
+    @users = Company.all if @users == nil
+    #limit, offset
+    @users = @users.offset(params[:offset]).limit(params[:limit])
+
+    @users = @users.collect{|e| e.user} if @users != nil
+    render json: {users: @users, total_count: @users.count}
   end
+
+  # GET /users/all
+  # def index
+  #   @users = nil #User.all
+
+  #   @filters = ['first_name', 'last_name', 'email']
+  #   @filters.each do |filter|
+  #     if @users == nil
+  #        @users = User.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+  #     else
+  #        @users = @users.or(User.where("#{filter} ILIKE ?", "%#{params[filter]}%")) if params[filter] != nil
+  #     end
+  #   end
+  #   @users = User.all if @users == nil
+
+  #   @users = @users.limit(params[:limit]).offset(params[:offset])
+
+  #   render json: {users: @users, total_count: @users.count}, except: :password
+  # end
 
   # GET /users/info/:id
   def show

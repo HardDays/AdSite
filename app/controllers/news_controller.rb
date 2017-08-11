@@ -8,12 +8,18 @@ class NewsController < ApplicationController
 
   # GET /news
   def index
-    @news = News.all
+    @news = nil
 
     @filters = ['title', 'description']
     @filters.each do |filter|
-      @news = @news.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+      if @news == nil
+         @news = News.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+      else
+         @news = @news.or(News.where("#{filter} ILIKE ?", "%#{params[filter]}%")) if params[filter] != nil
+      end
     end
+
+    @news = News.all if @news == nil
 
     render json: @news.limit(params[:limit]).offset(params[:offset])
   end
