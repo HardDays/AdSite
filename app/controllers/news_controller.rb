@@ -6,22 +6,79 @@ class NewsController < ApplicationController
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
 
+
+   def filter_one(param)
+    if @news != nil
+      @news = @news.where(param)
+    else
+      @news = Company.where(param)
+    end
+  end
+
+   def filter_two(param1, param2)
+    if @news != nil
+      @news = @news.where(param1, param2)
+    else
+      @news = Company.where(param1, param2)
+    end
+  end
+
+  def filter_join(param)
+    if @news != nil
+      @news = @news.joins(param).where(param => {name: params[param]})
+    else
+      @news = Company.joins(param).where(param => {name: params[param]})
+    end
+  end
+
   # GET /news
   def index
-    @news = nil
-
-    @filters = ['title', 'description']
-    @filters.each do |filter|
-      if @news == nil
-         @news = News.where("#{filter} ILIKE ?", "%#{params[filter]}%") if params[filter] != nil
+     #filter by type
+    if params[:c_type].present?
+      @type = CType.find_by(name: params[:c_type])
+      filter_one(c_type_id: @type.id)
+    end
+    #filter by category
+    if params[:sub_categories].present?
+      ids = []
+      for sub_cat in params[:sub_categories]
+        ids.push(SubCategory.find_by(name: sub_cat))
+      end
+      ids = ids.collect{|e|e.id}
+      if @users != nil
+        @news = @news.or(Company.where(sub_category_id: ids))
       else
-         @news = @news.or(News.where("#{filter} ILIKE ?", "%#{params[filter]}%")) if params[filter] != nil
+        @news = Company.where(sub_category_id: ids)
       end
     end
+    #filter by author
+    @news = filter_one(user_id: params[:user_id]) if params[:user_id].present?
+    #filter by expertise
+    @news = filter_join(:expertises) if params[:expertises].present?
+    #filter by agrement
+    @news = filter_join(:agrements) if params[:agrements].present?
+    
+    @users = @news.collect{|e| e.user.id} if @news != nil
 
+    @news = News.where(user_id: @users) if @users != nil
+    
+    #get all if no filters
     @news = News.all if @news == nil
+    filter_two("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
+    filter_two("description LIKE ?", "%#{params[:description]}%") if params[:description].present?
+    #filter by date
+    if params[:begin_date]
+      date = Date.parse(params[:begin_date])
+      @news = @news.where(created_at: date..(date + 10.year))
+    end
+    if params[:end_date]
+      date = Date.parse(params[:end_date])
+      @news = @news.where(created_at: (date - 10.year)..date)
+    end
+    #limit, offset
+    @news = @news.offset(params[:offset]).limit(params[:limit])
 
-    render json: @news.limit(params[:limit]).offset(params[:offset])
+    render json: @news
   end
 
   # GET /news/1

@@ -41,9 +41,17 @@ class AdsController < ApplicationController
       filter_one(c_type_id: @type.id)
     end
     #filter by category
-    if params[:sub_category].present?
-      @type = SubCategory.find_by(name: params[:sub_category])
-      filter_one(sub_category_id: @type.id)
+    if params[:sub_categories].present?
+      ids = []
+      for sub_cat in params[:sub_categories]
+        ids.push(SubCategory.find_by(name: sub_cat))
+      end
+      ids = ids.collect{|e|e.id}
+      if @users != nil
+        @ads = @ads.or(Ad.where(sub_category_id: ids))
+      else
+        @ads = Ad.where(sub_category_id: ids)
+      end
     end
     #filter by author
     @ads = filter_one(user_id: params[:user_id]) if params[:user_id].present?
@@ -53,6 +61,15 @@ class AdsController < ApplicationController
     @ads = filter_join(:agrements) if params[:agrements].present?
     #get all if no filters
     @ads = Ad.all if @ads == nil
+    #filter by date
+    if params[:begin_date]
+      date = Date.parse(params[:begin_date])
+      @ads = @ads.where(created_at: date..(date + 10.year))
+    end
+    if params[:end_date]
+      date = Date.parse(params[:end_date])
+      @ads = @ads.where(created_at: (date - 10.year)..date)
+    end
     #limit, offset
     @ads = @ads.offset(params[:offset]).limit(params[:limit])
     render json: {ads: @ads}

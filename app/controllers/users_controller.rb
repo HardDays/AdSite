@@ -69,12 +69,16 @@ class UsersController < ApplicationController
       end
     end
     #filter by category
-    if params[:sub_category].present?
-      @type = SubCategory.find_by(name: params[:sub_category])
+    if params[:sub_categories].present?
+      ids = []
+      for sub_cat in params[:sub_categories]
+        ids.push(SubCategory.find_by(name: sub_cat))
+      end
+      ids = ids.collect{|e|e.id}
       if @users != nil
-        @users = @users.or(Company.where(sub_category_id: @type.id))
+        @users = @users.or(Company.where(sub_category_id: ids))
       else
-        @users = Company.where(sub_category_id: @type.id)
+        @users = Company.where(sub_category_id: ids)
       end
     end
 
@@ -82,7 +86,6 @@ class UsersController < ApplicationController
     @users = filter_join(:expertises) if params[:expertises].present?
     #filter by agrement
     @users = filter_join(:agrements) if params[:agrements].present?
-
     #get all if no filters
     @users = Company.all if @users == nil
     #limit, offset
