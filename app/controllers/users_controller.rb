@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     @rate = Rate.new(user_id: @from.id, company_id: @user.company.id, rate: params[:rate])
     begin
       if @rate.save
-        render status: :ok
+        render json: @user
       else
         render json: @rate.errors, status: :unprocessable_entity
       end
@@ -37,6 +37,7 @@ class UsersController < ApplicationController
       render status: :not_found
     else
       @rate.destroy
+      render json: @user
     end
   end
 
@@ -60,7 +61,7 @@ class UsersController < ApplicationController
     @like = Like.new(user_id: @from.id, company_id: @user.company.id)
     begin
       if @like.save
-        render status: :ok
+        render json: @user
       else
         render json: @like.errors, status: :unprocessable_entity
       end
@@ -82,6 +83,7 @@ class UsersController < ApplicationController
       render status: :not_found
     else
       @like.destroy
+      render json: @user
     end
   end
 
