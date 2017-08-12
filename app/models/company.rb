@@ -21,6 +21,7 @@ class Company < ApplicationRecord
 		@cnt = rates.count
 		rates.each{|r| @sum += r.rate} if @cnt > 0
 		attrs[:rate] = @sum / (@cnt == 0 ? 1 : @cnt)
+		attrs[:likes] = likes.count
   		super.merge(attrs)
 	end
 end

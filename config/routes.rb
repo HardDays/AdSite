@@ -9,9 +9,12 @@ Rails.application.routes.draw do
   get 'users/all', action: :index, controller: 'users'
   get 'users/info/:id', action: :show, controller: 'users'
   get 'users/my_info', action: :my_info, controller: 'users'
+  get 'users/get_likes/:id', action: :get_likes, controller: 'users'
   post 'users/create', action: :create, controller: 'users'
   post 'users/rate', action: :rate, controller: 'users'
+  post 'users/unrate', action: :unrate, controller: 'users'
   post 'users/like', action: :like, controller: 'users'
+  post 'users/unlike', action: :unlike, controller: 'users'
   put 'users/update/:id', action: :update, controller: 'users'
   delete 'users/delete/:id', action: :delete, controller: 'users'
 

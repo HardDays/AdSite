@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :authorize_show, only: [:show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
-  before_action :authorize_rate, only: [:rate, :like]
+  before_action :authorize_rate, only: [:rate, :like, :unrate, :unlike]
 
   # POST /users/rate
   def rate
@@ -22,6 +22,28 @@ class UsersController < ApplicationController
     rescue Exception
         render status: :conflict 
     end
+  end
+
+  # POST /users/unrate
+  def unrate
+    @user = User.find(params[:user_id])
+    if @user.company == nil
+      render status: :unprocessable_entity and return
+    end
+
+    @rate = Rate.find_by(user_id: @from.id, company_id: @user.company.id)
+
+    if @rate == nil
+      render status: :not_found
+    else
+      @rate.destroy
+    end
+  end
+
+  # GET /users/get_likes/:id
+  def get_likes
+    @user = User.find(params[:id])
+    render json: @user.company.likes
   end
 
   # POST /users/like
@@ -44,6 +66,22 @@ class UsersController < ApplicationController
       end
     rescue Exception
         render status: :conflict 
+    end
+  end
+
+  # POST /users/unlike
+  def unlike
+    @user = User.find(params[:user_id])
+    if @user.company == nil
+      render status: :unprocessable_entity and return
+    end
+
+    @like = Like.find_by(user_id: @from.id, company_id: @user.company.id)
+
+    if @like == nil
+      render status: :not_found
+    else
+      @like.destroy
     end
   end
 
