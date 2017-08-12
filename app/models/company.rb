@@ -4,6 +4,7 @@ class Company < ApplicationRecord
 	belongs_to :sub_category, optional: true
 
 	has_many :rates, dependent: :destroy
+	has_many :likes, dependent: :destroy
 
 	has_and_belongs_to_many :expertises, dependent: :destroy
 	has_and_belongs_to_many :agrements, dependent: :destroy
