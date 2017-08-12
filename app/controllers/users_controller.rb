@@ -88,11 +88,13 @@ class UsersController < ApplicationController
     @users = filter_join(:agrements) if params[:agrements].present?
     #get all if no filters
     @users = Company.all if @users == nil
+
     #limit, offset
+    total = @users.count
     @users = @users.offset(params[:offset]).limit(params[:limit])
 
     @users = @users.collect{|e| e.user} if @users != nil
-    render json: {users: @users, total_count: @users.count}
+    render json: {users: @users, total_count: total}
   end
 
   # GET /users/all

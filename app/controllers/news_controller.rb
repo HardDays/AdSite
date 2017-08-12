@@ -59,7 +59,6 @@ class NewsController < ApplicationController
     @news = filter_join(:agrements) if params[:agrements].present?
     
     @users = @news.collect{|e| e.user.id} if @news != nil
-
     @news = News.where(user_id: @users) if @users != nil
     
     #get all if no filters
@@ -75,10 +74,10 @@ class NewsController < ApplicationController
       date = Date.parse(params[:end_date])
       @news = @news.where(created_at: (date - 10.year)..date)
     end
+    total = @news.count
     #limit, offset
     @news = @news.offset(params[:offset]).limit(params[:limit])
-
-    render json: @news
+    render json: {news: @news, total_count: total}
   end
 
   # GET /news/1

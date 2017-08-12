@@ -70,9 +70,10 @@ class AdsController < ApplicationController
       date = Date.parse(params[:end_date])
       @ads = @ads.where(created_at: (date - 10.year)..date)
     end
+    total = @ads.count
     #limit, offset
     @ads = @ads.offset(params[:offset]).limit(params[:limit])
-    render json: {ads: @ads}
+    render json: {ads: @ads, total_count: total}
   end
 
   # GET /ads/info/:id
