@@ -35,8 +35,13 @@ class NewsController < ApplicationController
   def index
      #filter by type
     if params[:c_type].present?
-      @type = CType.find_by(name: params[:c_type])
-      filter_one(c_type_id: @type.id)
+      if params[:c_type] == 'both'
+        ids = CType.all.collect{|e|e.id}
+        filter_one(c_type_id: ids)
+      else
+        @type = CType.find_by(name: params[:c_type])
+        filter_one(c_type_id: @type.id)
+      end
     end
     #filter by category
     if params[:sub_categories].present?
@@ -45,11 +50,7 @@ class NewsController < ApplicationController
         ids.push(SubCategory.find_by(name: sub_cat))
       end
       ids = ids.collect{|e|e.id}
-      if @users != nil
-        @news = @news.or(Company.where(sub_category_id: ids))
-      else
-        @news = Company.where(sub_category_id: ids)
-      end
+      filter_one(sub_category_id: ids)
     end
     #filter by author
     @news = filter_one(user_id: params[:user_id]) if params[:user_id].present?
@@ -63,8 +64,8 @@ class NewsController < ApplicationController
     
     #get all if no filters
     @news = News.all if @news == nil
-    filter_two("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
-    filter_two("description LIKE ?", "%#{params[:description]}%") if params[:description].present?
+    filter_two("lower(title) LIKE ?", "%#{params[:title].downcase}%") if params[:title].present?
+    filter_two("lower(description) LIKE ?", "%#{params[:description].downcase}%") if params[:description].present?
     #filter by date
     if params[:begin_date]
       date = Date.parse(params[:begin_date])
@@ -74,6 +75,7 @@ class NewsController < ApplicationController
       date = Date.parse(params[:end_date])
       @news = @news.where(created_at: (date - 10.year)..date)
     end
+    @news = @news.distinct(:id)
     total = @news.count
     #limit, offset
     @news = @news.offset(params[:offset]).limit(params[:limit])

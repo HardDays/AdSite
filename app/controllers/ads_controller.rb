@@ -32,13 +32,18 @@ class AdsController < ApplicationController
 
   # GET /ads/all
   def index
-    filter_two("title LIKE ?", "%#{params[:title]}%") if params[:title].present?
-    filter_two("description LIKE ?", "%#{params[:description]}%") if params[:description].present?
-    filter_two("address LIKE ?", "%#{params[:address]}%") if params[:address].present?
+    filter_two("lower(title) LIKE ?", "%#{params[:title].downcase}%") if params[:title].present?
+    filter_two("lower(description) LIKE ?", "%#{params[:description].downcase}%") if params[:description].present?
+    filter_two("lower(address) LIKE ?", "%#{params[:address].downcase}%") if params[:address].present?
     #filter by type
     if params[:c_type].present?
-      @type = CType.find_by(name: params[:c_type])
-      filter_one(c_type_id: @type.id)
+      if params[:c_type] == 'both'
+        ids = CType.all.collect{|e|e.id}
+        filter_one(c_type_id: ids)
+      else
+        @type = CType.find_by(name: params[:c_type])
+        filter_one(c_type_id: @type.id)
+      end
     end
     #filter by category
     if params[:sub_categories].present?
@@ -47,11 +52,12 @@ class AdsController < ApplicationController
         ids.push(SubCategory.find_by(name: sub_cat))
       end
       ids = ids.collect{|e|e.id}
-      if @users != nil
-        @ads = @ads.or(Ad.where(sub_category_id: ids))
-      else
-        @ads = Ad.where(sub_category_id: ids)
-      end
+      filter_one(sub_category_id: ids)
+      # if @users != nil
+      #   @ads = @ads.where(sub_category_id: ids)
+      # else
+      #   @ads = Ad.where(sub_category_id: ids)
+      # end
     end
     #filter by author
     @ads = filter_one(user_id: params[:user_id]) if params[:user_id].present?
@@ -70,6 +76,8 @@ class AdsController < ApplicationController
       date = Date.parse(params[:end_date])
       @ads = @ads.where(created_at: (date - 10.year)..date)
     end
+
+    @ads = @ads.distinct(:id)
     total = @ads.count
     #limit, offset
     @ads = @ads.offset(params[:offset]).limit(params[:limit])

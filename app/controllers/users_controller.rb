@@ -89,7 +89,7 @@ class UsersController < ApplicationController
 
   def filter_one(param)
     if @users != nil
-      @users = @users.or(Company.where(param))
+      @users = @users.where(param)
     else
       @users = Company.where(param)
     end
@@ -97,7 +97,7 @@ class UsersController < ApplicationController
 
    def filter_two(param1, param2)
     if @users != nil
-      @users = @users.or(Company.where(param1, param2))
+      @users = @users.where(param1, param2)
     else
       @users = Company.where(param1, param2)
     end
@@ -116,20 +116,21 @@ class UsersController < ApplicationController
 
     @users = nil
     
-    filter_two("companies.name LIKE ?", "%#{params[:name]}%") if params[:name].present?
-    filter_two("address LIKE ?", "%#{params[:address]}%") if params[:address].present?
-    filter_two("other_address LIKE ?", "%#{params[:other_address]}%") if params[:other_address].present?
-    filter_two("email LIKE ?", "%#{params[:email]}%") if params[:email].present?
+    filter_two("lower(companies.name) LIKE ?", "%#{params[:name].downcase}%") if params[:name].present?
+    filter_two("lower(address) LIKE ?", "%#{params[:address].downcase}%") if params[:address].present?
+    filter_two("lower(other_address) LIKE ?", "%#{params[:other_address].downcase}%") if params[:other_address].present?
+    filter_two("lower(email) LIKE ?", "%#{params[:email].downcase}%") if params[:email].present?
     filter_two("opening_times LIKE ?", "%#{params[:opening_times]}%") if params[:opening_times].present?
     filter_two("company_id LIKE ?", "%#{params[:company_id]}%") if params[:company_id].present?
 
     #filter by type
     if params[:c_type].present?
-      @type = CType.find_by(name: params[:c_type])
-      if @users != nil
-        @users = @users.or(Company.where(c_type_id: @type.id))
+      if params[:c_type] == 'both'
+        ids = CType.all.collect{|e|e.id}
+        filter_one(c_type_id: ids)
       else
-        @users = Company.where(c_type_id: @type.id)
+        @type = CType.find_by(name: params[:c_type])
+        filter_one(c_type_id: @type.id)
       end
     end
     #filter by category
@@ -139,11 +140,7 @@ class UsersController < ApplicationController
         ids.push(SubCategory.find_by(name: sub_cat))
       end
       ids = ids.collect{|e|e.id}
-      if @users != nil
-        @users = @users.or(Company.where(sub_category_id: ids))
-      else
-        @users = Company.where(sub_category_id: ids)
-      end
+      filter_one(sub_category_id: ids)
     end
 
     #filter by expertise
@@ -153,6 +150,7 @@ class UsersController < ApplicationController
     #get all if no filters
     @users = Company.all if @users == nil
 
+    @users = @users.distinct(:id)
     #limit, offset
     total = @users.count
     @users = @users.offset(params[:offset]).limit(params[:limit])
