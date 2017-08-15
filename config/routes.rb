@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   get 'users/all', action: :index, controller: 'users'
   get 'users/info/:id', action: :show, controller: 'users'
   get 'users/my_info', action: :my_info, controller: 'users'
+  get 'users/get_my_likes', action: :get_my_likes, controller: 'users'
+  get 'users/get_my_rates', action: :get_my_rates, controller: 'users'
   get 'users/get_likes/:id', action: :get_likes, controller: 'users'
   post 'users/create', action: :create, controller: 'users'
   post 'users/rate', action: :rate, controller: 'users'

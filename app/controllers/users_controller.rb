@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_action :authorize_show, only: [:show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
-  before_action :authorize_rate, only: [:rate, :like, :unrate, :unlike]
+  before_action :authorize_rate, only: [:rate, :like, :unrate, :unlike, :get_my_likes, :get_my_rates]
 
   # POST /users/rate
   def rate
@@ -22,6 +22,18 @@ class UsersController < ApplicationController
     rescue Exception
         render status: :conflict 
     end
+  end
+
+  # GET /users/get_my_rates
+  def get_my_rates
+    res = []
+    @from.rates.each do |rate|
+      tmp = {}
+      tmp[:rate] = rate.rate
+      tmp[:user_id] = rate.company.user_id
+      res.push(tmp)
+    end
+    render json: res
   end
 
   # POST /users/unrate
@@ -45,6 +57,17 @@ class UsersController < ApplicationController
   def get_likes
     @user = User.find(params[:id])
     render json: @user.company.likes
+  end
+
+  # GET /users/get_my_likes
+  def get_my_likes
+    res = []
+    @from.likes.each do |rate|
+      tmp = {}
+      tmp[:user_id] = rate.company.user_id
+      res.push(tmp)
+    end
+    render json: res
   end
 
   # POST /users/like
