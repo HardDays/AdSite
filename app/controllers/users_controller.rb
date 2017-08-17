@@ -134,11 +134,33 @@ class UsersController < ApplicationController
     end
   end
 
+
+  def filter_user_params
+    if params[:user_name]
+      names = params[:user_name].split(' ').map {|val| "%#{val.downcase}%" }
+      puts json: names
+      if @users != nil
+        @users = @users.joins(:user).where("lower(first_name) LIKE ANY (array[?])", names).or(@users.joins(:user).where("lower(last_name) LIKE ANY (array[?])", names))
+      else
+        @users = Company.joins(:user).where("lower(first_name) LIKE ANY (array[?])", names).or(Company.joins(:user).where("lower(last_name) LIKE ANY (array[?])", names))
+      end
+    end
+    if params[:user_email]
+      if @users != nil
+        @users = @users.joins(:user).where("lower(users.email) LIKE ?", "%#{params[:user_email].downcase}%")
+      else
+        @users = Company.joins(:user).where("lower(users.email) LIKE ?", "%#{params[:user_email].downcase}%")
+      end
+    end
+  end
+
   # GET /users/all
   def index
 
     @users = nil
-    
+
+    filter_user_params
+
     filter_two("lower(companies.name) LIKE ?", "%#{params[:name].downcase}%") if params[:name].present?
     filter_two("lower(address) LIKE ?", "%#{params[:address].downcase}%") if params[:address].present?
     filter_two("lower(other_address) LIKE ?", "%#{params[:other_address].downcase}%") if params[:other_address].present?
