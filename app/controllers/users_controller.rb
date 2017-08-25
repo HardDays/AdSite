@@ -1,6 +1,8 @@
 class UsersController < ApplicationController  
-  before_action :authorize_index, only: [:index]
-  before_action :authorize_show, only: [:show]
+  before_action :set_user, only: [:show]
+
+  #before_action :authorize_index, only: [:index]
+  #before_action :authorize_show, only: [:show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
   before_action :authorize_rate, only: [:rate, :like, :unrate, :unlike, :get_my_likes, :get_my_rates]
@@ -366,8 +368,12 @@ class UsersController < ApplicationController
       end
     end
 
-    def authorize_self(access)
+    def set_user
       @user = User.find(params[:id])
+    end
+
+    def authorize_self(access)
+      set_user
       if not AuthorizeController.authorize_self(request, access, @user)
         render status: :unauthorized
       end

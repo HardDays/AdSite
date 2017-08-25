@@ -2,7 +2,7 @@ class NewsController < ApplicationController
   before_action :set_news, only: [:show, :update, :delete]
 
   before_action :authorize_create, only: [:create]
-  before_action :authorize_show, only: [:index, :show]
+  #before_action :authorize_show, only: [:index, :show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
 

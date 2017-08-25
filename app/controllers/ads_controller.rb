@@ -1,8 +1,8 @@
 class AdsController < ApplicationController
   before_action :set_ad, only: [:show, :update, :delete]
   before_action :authorize_create, only: [:create]
-  before_action :authorize_index, only: [:index]
-  before_action :authorize_show, only: [:show]
+  #before_action :authorize_index, only: [:index]
+  # before_action :authorize_show, only: [:show]
   before_action :authorize_update, only: [:update]
   before_action :authorize_delete, only: [:delete]
 
