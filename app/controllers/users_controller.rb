@@ -203,7 +203,7 @@ class UsersController < ApplicationController
     @users = @users.offset(params[:offset]).limit(params[:limit])
 
     @users = @users.collect{|e| e.user} if @users != nil
-    render json: {users: @users, total_count: total}
+    render json: {users: @users, total_count: total}, except: :password
   end
 
   # GET /users/all
