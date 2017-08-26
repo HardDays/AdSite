@@ -14,7 +14,7 @@ class ForumController < ApplicationController
 #     )
 #     puts json: admin.errors
 #   end
-    def self.create_user(name, email, password)
+    def self.create_user(name, email, password, main_id)
         uri = URI("https://patrimoine-forum-th.herokuapp.com/users")
         https = Net::HTTP.new(uri.host, uri.port)
         https.use_ssl = true
@@ -24,15 +24,15 @@ class ForumController < ApplicationController
         'user[display_name]' => name,
         'user[email]' => email,
         'user[password]' => password,
-        'user[password_confirmation]' => password
+        'user[password_confirmation]' => password,
+        'user[main_id]' => main_id
+
         }
         request.body = URI.encode_www_form(params)
 
         request["Content-Type"] = 'application/x-www-form-urlencoded'
 
         response = https.request(request)
-        puts 'AAAAAAAAAAAAAAAAAAAAAAA'
-        puts name, email, password
-        puts json: response.body
+       
     end
 end
