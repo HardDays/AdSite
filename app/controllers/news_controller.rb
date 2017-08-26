@@ -33,6 +33,8 @@ class NewsController < ApplicationController
 
   # GET /news
   def index
+
+    ForumController.create_user
      #filter by type
     if params[:c_type].present?
       if params[:c_type] == 'both'
