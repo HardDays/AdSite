@@ -289,6 +289,7 @@ class UsersController < ApplicationController
         @company.destroy
         render status: :unprocessable_entity and return
       else
+        ForumController.create_user(params[:user][:first_name] + ' ' + params[:user][:last_name], params[:user][:email], params[:user][:password])
         render json: @user, except: :password, status: :created
       end
     else
@@ -297,6 +298,7 @@ class UsersController < ApplicationController
         @user.destroy
         render status: :unprocessable_entity and return
       end
+      ForumController.create_user(params[:user][:first_name] + ' ' + params[:user][:last_name], params[:user][:email], params[:user][:password])
       render json: @user, except: :password, status: :created
     end 
   end 

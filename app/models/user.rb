@@ -3,7 +3,7 @@ require 'digest'
 class User < ApplicationRecord
 
 	validates :email, presence: true, uniqueness: true
-	validates :password, presence: true
+	validates :password, presence: true, length: {:within => 6..40}
 
 	has_many :tokens, dependent: :destroy
 	has_many :ads, dependent: :destroy
