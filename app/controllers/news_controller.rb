@@ -94,6 +94,11 @@ class NewsController < ApplicationController
   def create
     @news = News.new(news_params)
     @news.user_id = @user.id
+
+    if news_params[:ntype] == nil
+      @news.ntype = :standart
+    end
+    
     if @news.save
 
       if params[:base64] != nil
