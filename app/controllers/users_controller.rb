@@ -140,7 +140,6 @@ class UsersController < ApplicationController
   def filter_user_params
     if params[:user_name]
       names = params[:user_name].split(' ').map {|val| "%#{val.downcase}%" }
-      puts json: names
       if @users != nil
         @users = @users.joins(:user).where("lower(first_name) LIKE ANY (array[?])", names).or(@users.joins(:user).where("lower(last_name) LIKE ANY (array[?])", names))
       else
@@ -152,6 +151,13 @@ class UsersController < ApplicationController
         @users = @users.joins(:user).where("lower(users.email) LIKE ?", "%#{params[:user_email].downcase}%")
       else
         @users = Company.joins(:user).where("lower(users.email) LIKE ?", "%#{params[:user_email].downcase}%")
+      end
+    end
+    if params[:pcategory]
+      if @users != nil
+        @users = @users.joins(:user).where(users: {pcategory: params[:pcategory]})
+      else
+        @users = Company.joins(:user).where(users: {pcategory: params[:pcategory]})
       end
     end
   end
@@ -357,7 +363,7 @@ class UsersController < ApplicationController
   private
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:email, :password, :first_name, :last_name, :phone)
+      params.require(:user).permit(:email, :password, :first_name, :last_name, :phone, :pcategory)
     end
 
     def company_params

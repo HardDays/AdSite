@@ -66,6 +66,9 @@ class NewsController < ApplicationController
     @news = News.all if @news == nil
     filter_two("lower(title) LIKE ?", "%#{params[:title].downcase}%") if params[:title].present?
     filter_two("lower(description) LIKE ?", "%#{params[:description].downcase}%") if params[:description].present?
+    filter_one(ntype: params[:ntype]) if params[:ntype].present?
+    filter_one(ncategory: params[:ncategory]) if params[:ncategory].present?
+
     #filter by date
     if params[:begin_date]
       date = Date.parse(params[:begin_date])
@@ -92,6 +95,14 @@ class NewsController < ApplicationController
     @news = News.new(news_params)
     @news.user_id = @user.id
     if @news.save
+
+      if params[:base64] != nil
+        @image = Image.new(base64: params[:base64])
+        @image.save
+        @news.image = @image
+        @news.save
+      end
+
       render json: @news, status: :created
     else
       render json: @news.errors, status: :unprocessable_entity
@@ -101,6 +112,14 @@ class NewsController < ApplicationController
   # PATCH/PUT /news/1
   def update
     if @news.update(news_params)
+
+      if params[:base64] != nil
+        @image = Image.new(base64: params[:base64])
+        @image.save
+        @news.image = @image
+        @news.save
+      end
+
       render json: @news
     else
       render json: @news.errors, status: :unprocessable_entity
@@ -150,6 +169,6 @@ class NewsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def news_params
-      params.require(:news).permit(:title, :description, :user_id)
+      params.require(:news).permit(:title, :subtitle, :description, :ntype, :ncategory)
     end
 end

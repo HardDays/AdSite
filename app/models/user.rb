@@ -14,6 +14,10 @@ class User < ApplicationRecord
 	has_one :company, dependent: :destroy
 
 	has_and_belongs_to_many :accesses, dependent: :destroy
+	
+	validates_inclusion_of :pcategory, in: ['tous', 'assureurs', 'avocats', 'patrimoine', 'prets', 
+											'comptables', 'notaires', 'immobilier', nil]
+
 
 	def self.encrypt_password(password)
 		return Digest::SHA256.hexdigest(password + 'elite_salt')
