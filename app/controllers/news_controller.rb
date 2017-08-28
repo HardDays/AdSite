@@ -111,7 +111,7 @@ class NewsController < ApplicationController
       User.where(has_email_notifications: true).each do |user| 
           #puts 'aaaaaaaaaa'
           #puts user.email
-          NewsMailer.news_email(user, @news).deliver
+          NewsMailer.news_email(user, @news).deliver_now
       end
 
       render json: @news, status: :created
