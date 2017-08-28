@@ -350,7 +350,7 @@ class UsersController < ApplicationController
           render json: @company.errors, status: :unprocessable_entity and return
         end
       end
-      render json: @user, except: :password, status: :updated
+      render json: @user, except: :password, status: :ok
     end
 
     def update_me
