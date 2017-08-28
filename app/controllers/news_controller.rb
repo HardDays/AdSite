@@ -180,6 +180,6 @@ class NewsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def news_params
-      params.require(:news).permit(:title, :subtitle, :description, :ntype, :ncategory)
+      params.require(:news).permit(:title, :subtitle, :description, :ntype, :ncategory, :links)
     end
 end
