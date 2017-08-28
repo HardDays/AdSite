@@ -15,17 +15,17 @@ class ForumController < ApplicationController
 #     puts json: admin.errors
 #   end
     def self.create_user(name, email, password, main_id)
-        uri = URI("https://patrimoine-forum-th.herokuapp.com/users")
+        uri = URI(Rails.application.config.forum_users_url)
         https = Net::HTTP.new(uri.host, uri.port)
         https.use_ssl = true
 
         request = Net::HTTP::Post.new(uri.path)
         params = {
-        'user[display_name]' => name,
-        'user[email]' => email,
-        'user[password]' => password,
-        'user[password_confirmation]' => password,
-        'user[main_id]' => main_id
+            'user[display_name]' => name,
+            'user[email]' => email,
+            'user[password]' => password,
+            'user[password_confirmation]' => password,
+            'user[main_id]' => main_id
 
         }
         request.body = URI.encode_www_form(params)

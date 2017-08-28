@@ -108,6 +108,12 @@ class NewsController < ApplicationController
         @news.save
       end
 
+      User.where(has_email_notifications: true).each do |user| 
+          #puts 'aaaaaaaaaa'
+          #puts user.email
+          NewsMailer.news_email(user, @news).deliver
+      end
+
       render json: @news, status: :created
     else
       render json: @news.errors, status: :unprocessable_entity

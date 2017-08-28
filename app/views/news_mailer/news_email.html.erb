@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+
+  <body>
+    <h1 align="center" style="color:#0470AF;">New announce!</h1>
+    <h2 align="center" style="color:#0470AF;"> <br><%= @news.title %><br> </h2>
+    <div>
+    <%= @news.description[0..500] + '...' if @news.description != nil%>
+    </div>
+    <h3 align="center"><a href=<%=Rails.application.config.announce_url + @news.id.to_s%> >View at Patrimoine site</a></h3>
+  </body>
+</html>

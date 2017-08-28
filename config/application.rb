@@ -29,5 +29,9 @@ module Shop
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    config.main_url = 'http://patrimoine-front.herokuapp.com/'
+    config.announce_url = 'http://patrimoine-front.herokuapp.com/news_list/'
+    config.forum_users_url = 'https://patrimoine-forum-th.herokuapp.com/users'
   end
 end
