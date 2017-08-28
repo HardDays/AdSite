@@ -1,5 +1,5 @@
 class UsersController < ApplicationController  
-  before_action :set_user, only: [:show]
+  before_action :set_user, only: [:show, :update]
 
   #before_action :authorize_index, only: [:index]
   #before_action :authorize_show, only: [:show]
@@ -311,7 +311,6 @@ class UsersController < ApplicationController
 
   # PUT /users/update/:id
   def update
-    @user = User.find(params[:id])
     @password = params[:user][:password]
     if @password != nil
       params[:user][:password] = User.encrypt_password(@password)
@@ -348,10 +347,15 @@ class UsersController < ApplicationController
           ExpertiseController.set_company_expertises(@company, params[:expertises])
         end
 
-        render json: @company.errors, status: :unprocessable_entity and return
+          render json: @company.errors, status: :unprocessable_entity and return
+        end
       end
       render json: @user, except: :password, status: :updated
-      end
+    end
+
+    def update_me
+      @user = AuthorizeController.authorize(request)
+      update
     end
 
   # DELETE /users/delete/:id

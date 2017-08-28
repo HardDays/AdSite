@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   post 'users/like', action: :like, controller: 'users'
   post 'users/unlike', action: :unlike, controller: 'users'
   put 'users/update/:id', action: :update, controller: 'users'
+  put 'users/update_me', action: :update_me, controller: 'users'
   delete 'users/delete/:id', action: :delete, controller: 'users'
 
   #Access routes
