@@ -129,14 +129,14 @@ class AdsController < ApplicationController
     def authorize(access)
       @user = AuthorizeController.authorize(request)
       if @user == nil or not @user.has_access?(access)
-        render status: :unauthorized
+        render status: :forbidden
       end
     end
 
     def authorize_self(access)
       @user = Ad.find(params[:id]).user
       if not AuthorizeController.authorize_self(request, access, @user)
-        render status: :unauthorized
+        render status: :forbidden
       end
     end
 

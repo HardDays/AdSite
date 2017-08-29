@@ -376,7 +376,7 @@ class UsersController < ApplicationController
 
     def authorize(access)
       if not AuthorizeController.authorize_access(request, access)
-        render status: :unauthorized
+        render status: :forbidden
       end
     end
 
@@ -387,7 +387,7 @@ class UsersController < ApplicationController
     def authorize_self(access)
       set_user
       if not AuthorizeController.authorize_self(request, access, @user)
-        render status: :unauthorized
+        render status: :forbidden
       end
     end
 
