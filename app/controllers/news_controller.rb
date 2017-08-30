@@ -81,7 +81,7 @@ class NewsController < ApplicationController
     @news = @news.distinct(:id)
     total = @news.count
     #limit, offset
-    @news = @news.offset(params[:offset]).limit(params[:limit])
+    @news = @news.order(updated_at: :desc).offset(params[:offset]).limit(params[:limit])
     render json: {news: @news, total_count: total}
   end
 
