@@ -11,7 +11,7 @@ class NewsController < ApplicationController
     if @news != nil
       @news = @news.where(param)
     else
-      @news = Company.where(param)
+      @news = News.where(param)
     end
   end
 
@@ -19,7 +19,7 @@ class NewsController < ApplicationController
     if @news != nil
       @news = @news.where(param1, param2)
     else
-      @news = Company.where(param1, param2)
+      @news = News.where(param1, param2)
     end
   end
 
@@ -27,7 +27,7 @@ class NewsController < ApplicationController
     if @news != nil
       @news = @news.joins(param).where(param => {name: params[param]})
     else
-      @news = Company.joins(param).where(param => {name: params[param]})
+      @news = News.joins(param).where(param => {name: params[param]})
     end
   end
 
@@ -59,8 +59,8 @@ class NewsController < ApplicationController
     #filter by agrement
     @news = filter_join(:agrements) if params[:agrements].present?
     
-    @users = @news.collect{|e| e.user.id} if @news != nil
-    @news = News.where(user_id: @users) if @users != nil
+    #users = @news.collect{|e| e.user.id} if @news != nil
+    #@news = News.where(user_id: @users) if @users != nil
     
     #get all if no filters
     @news = News.all if @news == nil
@@ -108,10 +108,16 @@ class NewsController < ApplicationController
         @news.save
       end
 
+      if @user.company != nil
+        @news.c_type_id = @user.company.c_type.id
+        @news.sub_category_id = @user.company.sub_category.id
+        ExpertiseController.set_news_expertises(@news, @user.company.expertises)
+        AgrementController.set_news_agrements(@news, @user.company.agrements)
+        @news.save
+      end
+
       User.where(has_email_notifications: true).each do |user| 
-          #puts 'aaaaaaaaaa'
-          #puts user.email
-          NewsMailer.news_email(user, @news).deliver_now
+          #NewsMailer.news_email(user, @news).deliver_now
       end
 
       render json: @news, status: :created

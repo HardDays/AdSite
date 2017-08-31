@@ -25,4 +25,18 @@ class ExpertiseController < ApplicationController
 		end
 		return true
 	end
+
+	def self.set_news_expertises(news, expertises)
+		news.expertises.clear
+		expertises.each do |exp|
+			begin
+				news.expertises << exp
+			rescue Exception
+				return false
+			end
+		end
+		return true
+	end
 end
+
+

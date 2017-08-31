@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170828085103) do
+ActiveRecord::Schema.define(version: 20170831082818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,13 @@ ActiveRecord::Schema.define(version: 20170828085103) do
     t.index ["company_id"], name: "index_agrements_companies_on_company_id"
   end
 
+  create_table "agrements_news", id: false, force: :cascade do |t|
+    t.bigint "news_id"
+    t.bigint "agrement_id"
+    t.index ["agrement_id"], name: "index_agrements_news_on_agrement_id"
+    t.index ["news_id"], name: "index_agrements_news_on_news_id"
+  end
+
   create_table "c_types", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -104,6 +111,13 @@ ActiveRecord::Schema.define(version: 20170828085103) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "expertises_news", id: false, force: :cascade do |t|
+    t.bigint "news_id"
+    t.bigint "expertise_id"
+    t.index ["expertise_id"], name: "index_expertises_news_on_expertise_id"
+    t.index ["news_id"], name: "index_expertises_news_on_news_id"
+  end
+
   create_table "images", force: :cascade do |t|
     t.string "base64"
     t.datetime "created_at", null: false
@@ -128,6 +142,8 @@ ActiveRecord::Schema.define(version: 20170828085103) do
     t.string "links"
     t.string "ntype"
     t.string "ncategory"
+    t.integer "c_type_id"
+    t.integer "sub_category_id"
   end
 
   create_table "rates", force: :cascade do |t|

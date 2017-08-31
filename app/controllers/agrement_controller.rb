@@ -23,4 +23,16 @@ class AgrementController < ApplicationController
 		end
 		return true
 	end
+
+	def self.set_news_agrements(news, agrements)
+		news.agrements.clear
+		agrements.each do |agr|
+			begin
+				news.agrements << agr
+			rescue Exception
+				return false
+			end
+		end
+		return true
+	end
 end
