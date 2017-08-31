@@ -12,7 +12,7 @@ class Ad < ApplicationRecord
 		attrs[:c_type] = c_type.name if c_type.present?
 		attrs[:agrements] = agrements.collect{|a| a.name}
 		attrs[:expertises] = expertises.collect{|e| e.name}
-		ttrs[:user_first_name] = user.first_name if user.present?
+		attrs[:user_first_name] = user.first_name if user.present?
 		attrs[:user_last_name] = user.last_name if user.present?
   		super.merge(attrs)
 	end
