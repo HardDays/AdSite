@@ -304,7 +304,12 @@ class UsersController < ApplicationController
         @user.destroy
         render status: :unprocessable_entity and return
       end
-      ForumController.create_user(params[:user][:first_name] + ' ' + params[:user][:last_name], params[:user][:email], params[:user][:password], @user.id)
+      if params[:user][:first_name] and params[:user][:last_name]
+        @first_last = params[:user][:first_name] + ' ' + params[:user][:last_name] 
+      else
+        @first_last = params[:user][:email]
+      end
+      ForumController.create_user(@first_last, params[:user][:email], params[:user][:password], @user.id)
       render json: @user, except: :password, status: :created
     end 
   end 
