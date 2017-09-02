@@ -110,14 +110,14 @@ class NewsController < ApplicationController
 
       if @user.company != nil
         @news.c_type_id = @user.company.c_type.id
-        @news.sub_category_id = @user.company.sub_category.id
+        @news.sub_category_id = @user.company.sub_category.id if @user.company.sub_category != nil
         ExpertiseController.set_news_expertises(@news, @user.company.expertises)
         AgrementController.set_news_agrements(@news, @user.company.agrements)
         @news.save
       end
 
       User.where(has_email_notifications: true).each do |user| 
-          #NewsMailer.news_email(user, @news).deliver_now
+          NewsMailer.news_email(user, @news).deliver_now
       end
 
       render json: @news, status: :created
