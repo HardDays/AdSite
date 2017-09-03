@@ -329,7 +329,7 @@ class UsersController < ApplicationController
     #update user
     @user.password = @password
     if @user.save
-      render json: @user
+      render json: @user, except: :password
     else
       render json: @user.errors, status: :unprocessable_entity and return
     end
