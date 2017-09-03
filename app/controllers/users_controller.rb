@@ -339,17 +339,19 @@ class UsersController < ApplicationController
 
   # PUT /users/update/:id
   def update
-    @password = params[:user][:password]
-    if @password != nil
-      params[:user][:password] = User.encrypt_password(@password)
-    end
-    #update user
-    if !@user.update(user_params)
-      render json: @user.errors, status: :unprocessable_entity and return
+    if params[:user].present?
+      @password = params[:user][:password]
+      if @password != nil
+        params[:user][:password] = User.encrypt_password(@password)
+      end
+      #update user
+      if !@user.update(user_params)
+        render json: @user.errors, status: :unprocessable_entity and return
+      end
     end
 
     #update company
-    if params[:company] != nil
+    if params[:company].present?
       @company = Company.find_by user_id: @user.id
       #add sub-category
       if params[:company][:sub_category] != nil
@@ -365,17 +367,17 @@ class UsersController < ApplicationController
         @image.save
         @company.image = @image
       end
-      if !@company.update(company_params)
-        #many-to-many agrements
-        if params[:agrements] != nil
-          AgrementController.set_company_agrements(@company, params[:agrements])
-        end
-        #many-to-many expretises
-        if params[:expertises] != nil
-          ExpertiseController.set_company_expertises(@company, params[:expertises])
-        end
-
-          render json: @company.errors, status: :unprocessable_entity and return
+        if !@company.update(company_params)
+            render json: @company.errors, status: :unprocessable_entity and return
+        else
+           #many-to-many agrements
+          if params[:agrements] != nil
+            AgrementController.set_company_agrements(@company, params[:agrements])
+          end
+          #many-to-many expretises
+          if params[:expertises] != nil
+            ExpertiseController.set_company_expertises(@company, params[:expertises])
+          end
         end
       end
       render json: @user, except: :password, status: :ok
@@ -395,11 +397,11 @@ class UsersController < ApplicationController
   private
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.require(:user).permit(:email, :password, :first_name, :last_name, :phone, :pcategory, :has_email_notifications)
+      params.require(:user).permit(:email, :password, :first_name, :last_name, :phone, :pcategory, :has_email_notifications) if params[:user].present?
     end
 
     def company_params
-      params.require(:company).permit(:name, :logo, :address, :other_address, :email, :phone, :opening_times, :company_id, :description, :links, :user_id)
+      params.require(:company).permit(:name, :logo, :address, :other_address, :email, :phone, :opening_times, :company_id, :description, :links, :user_id) if  params[:company].present?
     end
 
     def authorize(access)
