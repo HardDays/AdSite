@@ -1,5 +1,5 @@
 class UsersController < ApplicationController  
-  before_action :set_user, only: [:show, :update]
+  before_action :set_user, only: [:show, :update ]
 
   #before_action :authorize_index, only: [:index]
   #before_action :authorize_show, only: [:show]
@@ -247,6 +247,7 @@ class UsersController < ApplicationController
     end
   end
 
+ 
   # POST /users/create
   def create
     #create user
@@ -313,6 +314,28 @@ class UsersController < ApplicationController
       render json: @user, except: :password, status: :created
     end 
   end 
+
+  def change_password
+    @user = AuthorizeController.authorize(request)
+    
+    if not params[:old_password] or User.encrypt_password(params[:old_password]) != @user.password
+      render status: :forbidden and return
+    end
+
+    @password = params[:new_password]
+    if @password != nil
+     @password = User.encrypt_password(@password)
+    end
+    #update user
+    @user.password = @password
+    if @user.save
+      render json: @user
+    else
+      render json: @user.errors, status: :unprocessable_entity and return
+    end
+
+  end
+
 
   # PUT /users/update/:id
   def update
