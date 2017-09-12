@@ -46,5 +46,14 @@ Rails.application.routes.draw do
   #Images routes
   get 'images/info/:id', action: :show, controller: 'images'
 
+  #Reviews routes
+
+  get 'reviews/all', action: :index, controller: 'reviews'
+  get 'reviews/info/:id', action: :show, controller: 'reviewsnews'
+  post 'reviews/create', action: :create, controller: 'reviews'
+  put 'reviews/update/:id', action: :update, controller: 'reviews'
+  delete 'reviews/delete/:id', action: :delete, controller: 'reviews'
+
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
