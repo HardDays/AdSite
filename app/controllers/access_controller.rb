@@ -6,7 +6,7 @@ class AccessController < ApplicationController
 
 	def grant_admin_access_route
 		@to = User.find(params[:user_id])
-		if self.grant_admin_access(@to)
+		if AccessController.grant_admin_access(@to)
 			render status: :ok
 		else
 			render status: :bad_request
