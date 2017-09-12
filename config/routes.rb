@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
   get 'access/user_access/:id', action: :user_access, controller: 'access'
   get 'access/my_access', action: :my_access, controller: 'access'
+  post 'access/grant_admin_access/:user_id', action: :grant_admin_access_route, controller: 'access'
 
   #Ads routes
 
