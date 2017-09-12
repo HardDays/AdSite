@@ -5,7 +5,7 @@ class AccessController < ApplicationController
 	before_action :authorize_self, only: [:my_access]
 
 	def grant_admin_access_route
-		@to = find(params[:user_id])
+		@to = User.find(params[:user_id])
 		if self.grant_admin_access(@to)
 			render status: :ok
 		else
