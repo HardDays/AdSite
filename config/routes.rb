@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   #Reviews routes
 
   get 'reviews/all', action: :index, controller: 'reviews'
-  get 'reviews/info/:id', action: :show, controller: 'reviewsnews'
+  get 'reviews/info/:id', action: :show, controller: 'reviews'
   post 'reviews/create', action: :create, controller: 'reviews'
   put 'reviews/update/:id', action: :update, controller: 'reviews'
   delete 'reviews/delete/:id', action: :delete, controller: 'reviews'
