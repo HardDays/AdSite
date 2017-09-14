@@ -13,6 +13,24 @@ class AccessController < ApplicationController
 		end
 	end
 
+	def grant_company_access_route
+		@to = User.find(params[:user_id])
+		if AccessController.grant_enterprises_access(@to)
+			render status: :ok
+		else
+			render status: :bad_request
+		end
+	end
+
+	def grant_client_access_route
+		@to = User.find(params[:user_id])
+		if AccessController.grant_client_access(@to)
+			render status: :ok
+		else
+			render status: :bad_request
+		end
+	end
+
 	def user_access
 		get_access
 	end
