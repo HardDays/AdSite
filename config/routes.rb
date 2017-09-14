@@ -27,8 +27,8 @@ Rails.application.routes.draw do
   get 'access/user_access/:id', action: :user_access, controller: 'access'
   get 'access/my_access', action: :my_access, controller: 'access'
   post 'access/grant_admin_access/:user_id', action: :grant_admin_access_route, controller: 'access'
-  post 'access/grant_client_access/:user_id', action: :grant_client_access_route, controller: 'access'
-  post 'access/grant_company_access/:user_id', action: :grant_company_access_route, controller: 'access'
+  post 'access/grant_user_access/:user_id', action: :grant_user_access_route, controller: 'access'
+  #post 'access/grant_company_access/:user_id', action: :grant_company_access_route, controller: 'access'
 
   #Ads routes
 
