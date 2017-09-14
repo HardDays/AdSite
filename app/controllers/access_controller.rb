@@ -7,7 +7,7 @@ class AccessController < ApplicationController
 	def grant_admin_access_route
 		@to = User.find(params[:user_id])
 		if AccessController.grant_admin_access(@to)
-			render status: :ok
+			render json: @to, status: :ok
 		else
 			render status: :bad_request
 		end
@@ -17,13 +17,13 @@ class AccessController < ApplicationController
 		@to = User.find(params[:user_id])
 		if @to.company != nil
 			if AccessController.grant_enterprises_access(@to)
-				render status: :ok
+				render json: @to, status: :ok
 			else
 				render status: :bad_request
 			end
 		else
 			if AccessController.grant_client_access(@to)
-				render status: :ok
+				render json: @to, status: :ok
 			else
 				render status: :bad_request
 			end
