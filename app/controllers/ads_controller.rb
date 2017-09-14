@@ -80,7 +80,7 @@ class AdsController < ApplicationController
     @ads = @ads.distinct(:id)
     total = @ads.count
     #limit, offset
-    @ads = @ads.offset(params[:offset]).limit(params[:limit])
+    @ads = @ads.order(updated_at: :desc).offset(params[:offset]).limit(params[:limit])
     render json: {ads: @ads, total_count: total}
   end
 
